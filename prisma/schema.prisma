@@ -14,9 +14,28 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
+model CoffeeBean {
+    id          String    @id @default(cuid())
+    name        String
+    rating      Int?
+    
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    brand       Brand? @relation(fields: [brandId], references: [id])
+    brandId     String?
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([name])
+}
+
+model Brand {
+    id  String @id @default(cuid())
+    name String
+    coffeeBeans CoffeeBean[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -61,7 +80,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    coffeeBeans   CoffeeBean[]
+    brands Brand[]
 }
 
 model VerificationToken {
