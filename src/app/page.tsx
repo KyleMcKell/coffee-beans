@@ -4,34 +4,26 @@ import { CreatePost } from "~/components/create-post";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import { DeletePost } from "../components/delete-post";
+import { Button } from "~/components/ui/button";
 
 export default async function Home() {
   const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-2xl text-white">
-            {hello ? hello.greeting : "Loading tRPC query..."}
-          </p>
+    <main className="">
+      <p className="">{hello ? hello.greeting : ""}</p>
 
-          <div className="flex flex-col items-center justify-center gap-4">
-            <p className="text-center text-2xl text-white">
-              {session && <span>Logged in as {session.user?.name}</span>}
-            </p>
-            <Link
-              href={session ? "/api/auth/signout" : "/api/auth/signin"}
-              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-            >
-              {session ? "Sign out" : "Sign in"}
-            </Link>
-          </div>
-        </div>
+      <p className="">
+        {session && <span>Logged in as {session.user?.name}</span>}
+      </p>
+      <Button asChild>
+        <Link href={session ? "/api/auth/signout" : "/api/auth/signin"}>
+          {session ? "Sign out" : "Sign in"}
+        </Link>
+      </Button>
 
-        <CrudShowcase />
-      </div>
+      <CrudShowcase />
     </main>
   );
 }
@@ -43,10 +35,10 @@ async function CrudShowcase() {
   const posts = await api.post.getAll.query();
 
   return (
-    <div className="w-full max-w-xs">
+    <div className="">
       {posts.map((post) => (
         <div>
-          <p className="truncate">
+          <p className="">
             {post.id}: {post.name}
           </p>
           <DeletePost postId={post.id} />
