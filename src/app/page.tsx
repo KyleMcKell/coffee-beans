@@ -20,12 +20,12 @@ export default async function Home() {
         </Link>
       </Button>
 
-      <CrudShowcase />
+      <CoffeeBeanList />
     </main>
   );
 }
 
-async function CrudShowcase() {
+async function CoffeeBeanList() {
   const session = await getServerAuthSession();
   if (!session?.user) return null;
 
