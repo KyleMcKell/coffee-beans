@@ -11,7 +11,7 @@ export const postRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
       return {
-        greeting: `Hello ${input.text}`,
+        greeting: `Hi there ${input.text}`,
       };
     }),
 
@@ -29,6 +29,14 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  delete: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.delete({
+        where: { id: input, createdById: ctx.session.user.id },
+      });
+    }),
+
   getLatest: protectedProcedure.query(({ ctx }) => {
     return ctx.db.post.findFirst({
       orderBy: { createdAt: "desc" },
@@ -36,6 +44,12 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
+  getAll: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.post.findMany({
+      orderBy: { createdAt: "asc" },
+      where: { createdById: ctx.session.user.id },
+    });
+  }),
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
